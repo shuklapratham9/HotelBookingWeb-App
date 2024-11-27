@@ -1,7 +1,7 @@
 const Hotel = require('../models/hotelmodel');
 const Room = require('../models/roommodel');
 
-// Controller to fetch hotels by location
+//Controller to fetch hotels by location
 exports.getHotelsByLocation = async (req, res) => {
   try {
     const { location } = req.body;

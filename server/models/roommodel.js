@@ -18,12 +18,12 @@ const roomSchema = new mongoose.Schema({
   },
   bookingDates: {
     from: {
-      type: Date, // Date when the booking starts
-      required: true, // Make this field required
+      type: Date, 
+      required: true, 
     },
     to: {
-      type: Date, // Date when the booking ends
-      required: true, // Make this field required
+      type: Date, 
+      required: true,
     }
   }
 });

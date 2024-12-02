@@ -1,7 +1,7 @@
 const Hotel = require('../models/hotelmodel');
 const Room = require('../models/roommodel');
 
-//Controller to fetch hotels by location
+//fetch hotels by location
 exports.getHotelsByLocation = async (req, res) => {
   try {
     const { location } = req.body;
@@ -23,11 +23,11 @@ exports.getHotelsByLocation = async (req, res) => {
   }
 };
 
-//fetch rooms with cost for a specific hotel and date range
+//fetch rooms with cost
 exports.getRoomsWithCost = async (req, res) => {
     try {
       const { _id, from, to } = req.body;
-      const fromDate = new Date(from);  //converting to Date object
+      const fromDate = new Date(from); 
       const toDate = new Date(to);      
       const hotelId = _id;
       

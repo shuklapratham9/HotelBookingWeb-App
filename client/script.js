@@ -5,11 +5,12 @@ let currentHotelData = null;
             console.log('Checking login status...');
         });
 
-        //function to check if user is logged in
+
         async function isUserLoggedIn() {
             try {
                 const response = await fetch('http://localhost:3000/auth/status', {
                     method: 'GET',
+                    credentials: "include"
                 });
                 const data = await response.json();
                 return data.isLoggedIn;
@@ -23,6 +24,7 @@ let currentHotelData = null;
             try {
                 const response = await fetch('http://localhost:3000/auth/status', {
                     method: 'GET',
+                    credentials:'include'
                 });
                 const data = await response.json();
                 console.log(data)
@@ -54,6 +56,7 @@ let currentHotelData = null;
             try {
                 const response = await fetch('http://localhost:3000/auth/google', {
                     method: 'GET',
+                    credentials:'include'
                 });
                 const data = await response.json();
                 console.log('Google login response:', data);
@@ -88,7 +91,6 @@ let currentHotelData = null;
         }
 
         async function searchHotels() {
-            //login status before proceeding
             const loggedIn = await isUserLoggedIn();
             if (!loggedIn) {
                 showMessage('Please login first to search hotels', 'error');
@@ -175,7 +177,7 @@ let currentHotelData = null;
         }
 
         async function viewRooms(hotelData) {
-            // Check login status before proceeding
+           
             const loggedIn = await isUserLoggedIn();
             if (!loggedIn) {
                 showMessage('Please login first to view rooms', 'error');
@@ -259,7 +261,7 @@ let currentHotelData = null;
         }
 
         async function bookRoom(roomId) {
-            //check login status before proceeding
+         
             const loggedIn = await isUserLoggedIn();
             if (!loggedIn) {
                 showMessage('Please login first to book a room', 'error');
@@ -314,3 +316,91 @@ let currentHotelData = null;
                 showMessage('Booking failed. Please try again.','error');
             }
         }
+      
+function toggleSideMenu() {
+    const sideMenu = document.getElementById('sideMenu');
+    sideMenu.classList.toggle('open');
+    if (sideMenu.classList.contains('open')) {
+        fetchLastBooking();
+    }
+}
+
+async function fetchLastBooking() {
+    try {
+        
+        const loggedIn = await isUserLoggedIn();
+        if (!loggedIn) {
+            showMessage('Please login to view last booking', 'error');
+            showLoginModal();
+            return;
+        }
+
+        const response=await fetch('http://localhost:3000/user/lastbooking', {
+            method:'GET',
+            credentials:'include'
+        });
+
+        const data = await response.json();
+
+        if (data.name) {
+            displayLastBooking(data);
+        } else {
+            document.getElementById('lastBookingDetails').innerHTML='<p>No previous bookings found</p>';
+            document.getElementById('cancelBookingBtn').style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error fetching last booking:', error);
+        showMessage('Error fetching last booking', 'error');
+    }
+}
+
+function displayLastBooking(bookingData) {
+    const container = document.getElementById('lastBookingDetails');
+    const from = new Date(bookingData.bookingDates.from).toLocaleDateString();
+    const to = new Date(bookingData.bookingDates.to).toLocaleDateString();
+
+    console.log(bookingData.name)
+    container.innerHTML = `
+        <h3>Booking Details</h3>
+        <p><strong>Hotel:</strong> ${bookingData?bookingData.name:'Unknown Hotel'}</p>
+        <p><strong>Room ID:</strong> ${bookingData.currentlyBookedRoom}</p>
+        <p><strong>Check-in:</strong> ${from}</p>
+        <p><strong>Check-out:</strong> ${to}</p>
+    `;
+    
+    document.getElementById('cancelBookingBtn').style.display = 'block';
+}
+
+async function cancelLastBooking() {
+    try {
+        const response = await fetch('http://localhost:3000/user/cancel', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+        showMessage(data.message, 'success');
+        
+        //clear booking details and hide cancel button
+        document.getElementById('lastBookingDetails').innerHTML = '<p>No previous bookings found</p>';
+        document.getElementById('cancelBookingBtn').style.display = 'none';
+    } catch (error) {
+        console.error('Error cancelling booking:', error);
+        showMessage('Error cancelling booking', 'error');
+    }
+}
+
+async function isUserLoggedIn() {
+    try {
+        const response = await fetch('http://localhost:3000/auth/status', {
+            method: 'GET',
+            credentials: "include"
+        });
+        const data = await response.json();
+        updateLoginButtons(data.isLoggedIn);
+        return data.isLoggedIn;
+    } catch (error) {
+        console.error('Error checking login status:', error);
+        return false;
+    }
+}

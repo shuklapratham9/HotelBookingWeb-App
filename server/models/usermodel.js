@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-// Define the user schema
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Name is required"], // Validation: Required
-    trim: true, // Trim whitespace
+    required: [true, "Name is required"],
+    trim: true,
   },
   age: {
     type: Number,
@@ -18,34 +18,34 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, "Email is required"], // Validation: Required
-    unique: true, // Ensure email uniqueness
-    trim: true, // Trim whitespace
-    match: [/\S+@\S+\.\S+/, "Email format is invalid"], // Validation: Email format
+    required: [true, "Email is required"],
+    unique: true,
+    trim: true,
+    match: [/\S+@\S+\.\S+/, "Email format is invalid"],
   },
   currentlyBookedRoom: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Room", // Reference to the Room model
-    default: null, // Default to null when no room is booked
+    ref: "Room", 
+    default: null, 
   },
   currentHotel: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Hotel", // Reference to the Hotel model
-    default: null, // Default to null when no hotel is associated
+    ref: "Hotel",
+    default: null, 
   },
   bookingDates: {
     from: {
-      type: Date, // Date when the booking starts
-      required: true, // Ensure this field is required
+      type: Date, 
+      default:null,
     },
     to: {
-      type: Date, // Date when the booking ends
-      required: true, // Ensure this field is required
+      type: Date, 
+      default:null
     }
   }
 });
 
-// Create the user model
+
 const user = mongoose.model('user', userSchema);
 
 module.exports = user;

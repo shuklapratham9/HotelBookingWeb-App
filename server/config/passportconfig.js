@@ -1,25 +1,22 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const User = require('../models/usermodel'); // Import the User model
+const User = require('../models/usermodel'); 
+require('dotenv').config();
 
-
-// Serialize the user (store user ID in the session)
 passport.serializeUser((user, done) => {
   done(null, user);
 });
 
-// Deserialize the user (attach user data to req.user)
 passport.deserializeUser((user,done) => {
     done(null,user);
 });
 
-// Google Strategy configuration
 passport.use(
   new GoogleStrategy(
     {
       callbackURL: '/auth/google/callback', 
-      clientID: '362885523584-kouoknsbi8trtt4js69ukd6atqukb05c.apps.googleusercontent.com', 
-      clientSecret: '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', 
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_SECRET_KEY,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -44,7 +41,7 @@ passport.use(
           age: 18, 
         });
 
-        await newUser.save(); //saving the new user to the database
+        await newUser.save(); 
         console.log('New user created:', newUser);
         return done(null, newUser); //pass new user to passport
       } catch (err) {

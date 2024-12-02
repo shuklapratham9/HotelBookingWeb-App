@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-//creating a transporter
+
 const transporter = nodemailer.createTransport({
     service: 'gmail', 
     auth: {
@@ -18,7 +18,7 @@ const sendEmail = (recipientEmail, message) => {
             text: message                   
         };
 
-        //send email using the transporter
+        
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
                 reject(`Error sending email:${error}`);

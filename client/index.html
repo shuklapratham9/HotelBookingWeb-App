@@ -12,8 +12,24 @@
         <div class="auth-buttons">
             <button onclick="showLoginModal()">Login / Sign Up</button>
             <a href="http://localhost:3000/auth/logout" class="logout-btn" style="display: none;">Logout</a>
+            <button class="side-menu-toggle" onclick="toggleSideMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linestyle="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
         </div>
     </header>
+
+    <div class="side-menu" id="sideMenu">
+        <button class="close-side-menu" onclick="toggleSideMenu()">×</button>
+        <div id="lastBookingContainer">
+            <h2>Last Booking</h2>
+            <div id="lastBookingDetails"></div>
+            <button id="cancelBookingBtn" class="cancel-booking-btn" onclick="cancelLastBooking()">Cancel Booking</button>
+        </div>
+    </div>
 
     <div class="modal-overlay" id="loginModal">
         <div class="modal">

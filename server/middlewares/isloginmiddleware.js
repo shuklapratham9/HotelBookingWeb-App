@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
         console.log('User is not authenticated');
         return res.status(401).send({
           isLoggedIn: false,
-          message: 'User is not logged in',
+          message:'User is not logged in',
         });
       }
   };

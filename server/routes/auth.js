@@ -28,7 +28,6 @@ router.get('/google/callback',passport.authenticate('google',{
 router.get('/status', (req, res) => {
 
     if (req.isAuthenticated()) {
-      console.log('User is authenticated:', req.user);
       return res.status(200).send({
         isLoggedIn: true,
         user: req.user, //send the authenticated user details

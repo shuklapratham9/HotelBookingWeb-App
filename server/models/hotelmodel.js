@@ -23,12 +23,12 @@ const hotelSchema = new mongoose.Schema({
   },
   rooms: {
     type: [mongoose.Schema.Types.ObjectId],
-    default: [] // An array of ObjectIds, default is empty
+    default: [] 
   },
   costPerRoom: {
     type: Number,
-    required: true, // Ensure this field is required
-    min: 0 // Cost should not be negative
+    required: true,
+    min: 0 
   }
 });
 

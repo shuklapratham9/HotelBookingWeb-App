@@ -1,45 +1,58 @@
-const express = require('express')
-const app = express()
-const path = require('path')
-const cors = require('cors')
-app.use(cors())
-const cookiesession = require('cookie-session')
-const authrouter = require('./routes/auth')
-//routers
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+const cookieSession = require('cookie-session');
+const passport = require('passport');
+require('dotenv').config();
+
+const connectdb = require('./dbconfig'); 
+const authrouter = require('./routes/auth');
 const hotelrouter = require('./routes/hotelRoutes.js');
-const bookingrounter = require('./routes/bookingRoutes')
+const bookingrouter = require('./routes/bookingRoutes');
+const userrouter = require('./routes/userRouter.js');
 
-//requiring local stuff
+const app = express();
 
-const connectdb = require('./dbconfig')
-//adding cookie session
-app.use(cookiesession({
-    name:'Session', 
-    maxAge:24*60*60*1000,
-    keys:[process.env.COOKIE_KEY_1,process.env.COOKIE_KEY_2]
-}))
-//addons
 
-app.use(express.json())
-app.use(express.static(path.join(__dirname,'..','client'))) 
-app.use('/',hotelrouter)
-app.use('/',bookingrounter)
-app.get('/',(req,res)=>{
-    res.sendFile(path.join(__dirname,'..','client','index.html'))
-})
-app.use('/auth',authrouter)
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '..', 'client')));
 
-// app.get('/auth/status',(req,res)=>{
-//     res.send({isloogedin:false})
-// })
-// app.get('/auth/useremail',(req,res)=>{
-//     res.send({
-//         email:'shukla.pratham2003@gmail.com',
-//     })
-// })
+//session confi
+app.use(
+    cookieSession({
+        name: 'Session',
+        maxAge: 24*60*60*1000,
+        keys: [process.env.COOKIE_KEY_1, process.env.COOKIE_KEY_2],
+    })
+);
 
-app.listen(3000,async ()=>{
+//passport initili
+app.use(passport.initialize());
+app.use(passport.session());
+
+//authentication middleware
+app.use((req, res, next) => {
+    if (req.session && req.session.user) {
+        req.user = req.session.user; 
+    }
+    next();
+});
+
+
+app.use('/auth', authrouter);
+app.use('/', hotelrouter);
+app.use('/', bookingrouter);
+app.use('/user', userrouter);
+
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'client', 'index.html'));
+});
+
+
+
+app.listen(3000, async () => {
     await connectdb();
-    console.log('server is listening...')
-})
-
+    console.log('Server is listening on http://localhost:3000');
+});

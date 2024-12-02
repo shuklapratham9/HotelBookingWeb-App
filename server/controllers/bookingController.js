@@ -1,8 +1,17 @@
 const User = require('../models/usermodel');
 const Room = require('../models/roommodel');
-const mailer = require('../middlewares/emailservice')
+const mailer = require('../middlewares/emailservice');
+const { reset } = require('nodemon');
 
 exports.bookRoom = async (req, res) => {
+  const user = await User.findById(req.user._id)
+  if(user.bookingDates.to)
+  {
+    if(user.bookingDates.to<(new Date()))
+    {
+       res.status(400).json({message : 'You have already a booking cancel it first'})
+    }
+  }
   const { hotelId, roomId, from, to, email } = req.body;
 
   try {
